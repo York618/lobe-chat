@@ -7,7 +7,7 @@ const OpenAI: ModelProviderCard = {
       contextWindowTokens: 200_000,
       description:
         'o3-mini是一款针对编程、数学和科学应用场景而设计的快速、经济高效的推理模型。该模型具有200K上下文和2023年10月的知识截止日期。',
-      displayName: 'OpenAI o1-mini',
+      displayName: 'OpenAI o3-mini',
       enabled: true,
       id: 'o3-mini',
       maxOutput: 100_000,
