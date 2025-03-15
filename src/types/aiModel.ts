@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { AiProviderSourceType } from '@/types/aiProvider';
-
 export type ModelPriceCurrency = 'CNY' | 'USD';
 
 export const AiModelSourceEnum = {
@@ -31,6 +29,10 @@ export interface ModelAbilities {
    */
   functionCall?: boolean;
   /**
+   * whether model supports image output
+   */
+  imageOutput?: boolean;
+  /**
    * whether model supports reasoning
    */
   reasoning?: boolean;
@@ -38,7 +40,6 @@ export interface ModelAbilities {
    * whether model supports search web
    */
   search?: boolean;
-
   /**
    *  whether model supports vision
    */
@@ -133,6 +134,24 @@ export interface AiModelConfig {
    * used in azure and doubao
    */
   deploymentName?: string;
+
+  /**
+   * qwen series model enabled search
+   */
+  enabledSearch?: boolean;
+}
+
+export type ModelSearchImplementType = 'tool' | 'params' | 'internal';
+
+export type ExtendParamsType = 'reasoningBudgetToken' | 'enableReasoning' | 'disableContextCaching';
+
+export interface AiModelSettings {
+  extendParams?: ExtendParamsType[];
+  /**
+   * 模型层实现搜索的方式
+   */
+  searchImpl?: ModelSearchImplementType;
+  searchProvider?: string;
 }
 
 export interface AIChatModelCard extends AIBaseModelCard {
@@ -140,6 +159,7 @@ export interface AIChatModelCard extends AIBaseModelCard {
   config?: AiModelConfig;
   maxOutput?: number;
   pricing?: ChatModelPricing;
+  settings?: AiModelSettings;
   type: 'chat';
 }
 
@@ -272,6 +292,7 @@ export interface AiProviderModelListItem {
   id: string;
   pricing?: ChatModelPricing;
   releasedAt?: string;
+  settings?: AiModelSettings;
   source?: AiModelSourceType;
   type: AiModelType;
 }
@@ -306,17 +327,22 @@ export type ToggleAiModelEnableParams = z.infer<typeof ToggleAiModelEnableSchema
 
 //
 
-interface AiModelForSelect {
+export interface AiModelForSelect {
   abilities: ModelAbilities;
   contextWindowTokens?: number;
   displayName?: string;
   id: string;
 }
 
-export interface EnabledProviderWithModels {
-  children: AiModelForSelect[];
+export interface EnabledAiModel {
+  abilities: ModelAbilities;
+  config?: AiModelConfig;
+  contextWindowTokens?: number;
+  displayName?: string;
+  enabled?: boolean;
   id: string;
-  logo?: string;
-  name: string;
-  source: AiProviderSourceType;
+  providerId: string;
+  settings?: AiModelSettings;
+  sort?: number;
+  type: AiModelType;
 }

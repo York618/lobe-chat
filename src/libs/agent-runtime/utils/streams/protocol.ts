@@ -1,4 +1,5 @@
 import { ChatStreamCallbacks } from '@/libs/agent-runtime';
+import { ModelTokensUsage } from '@/types/message';
 
 import { AgentRuntimeErrorType } from '../../error';
 
@@ -9,15 +10,21 @@ export interface StreamContext {
   id: string;
   /**
    * As pplx citations is in every chunk, but we only need to return it once
-   * this flag is used to check if the pplx citation is returned,and then not return it again
+   * this flag is used to check if the pplx citation is returned,and then not return it again.
+   * Same as Hunyuan and Wenxin
    */
-  returnedPplxCitation?: boolean;
+  returnedCitation?: boolean;
+  thinking?: {
+    id: string;
+    name: string;
+  };
   tool?: {
     id: string;
     index: number;
     name: string;
   };
   toolIndex?: number;
+  usage?: ModelTokensUsage;
 }
 
 export interface StreamProtocolChunk {
@@ -25,16 +32,24 @@ export interface StreamProtocolChunk {
   id?: string;
   type: // pure text
   | 'text'
+    // base64 format image
+    | 'base64_image'
     // Tools use
     | 'tool_calls'
     // Model Thinking
     | 'reasoning'
+    // use for reasoning signature, maybe only anthropic
+    | 'reasoning_signature'
+    // flagged reasoning signature
+    | 'flagged_reasoning_signature'
     // Search or Grounding
-    | 'citations'
+    | 'grounding'
     // stop signal
     | 'stop'
     // Error
     | 'error'
+    // token usage
+    | 'usage'
     // unknown data result
     | 'data';
 }

@@ -13,7 +13,8 @@ import {
 import { createSelectSchema } from 'drizzle-zod';
 
 import { idGenerator } from '@/database/utils/idGenerator';
-import { GroundingSearch, ModelReasoning } from '@/types/message';
+import { ModelReasoning } from '@/types/message';
+import { GroundingSearch } from '@/types/search';
 
 import { timestamps } from './_helpers';
 import { agents } from './agent';
@@ -72,6 +73,9 @@ export const messages = pgTable(
       table.clientId,
       table.userId,
     ),
+    topicIdIdx: index('messages_topic_id_idx').on(table.topicId),
+    parentIdIdx: index('messages_parent_id_idx').on(table.parentId),
+    quotaIdIdx: index('messages_quota_id_idx').on(table.quotaId),
   }),
 );
 
